@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+		<!-- <beans:property name="order" value="1" /> --> <!-- interceptor 순서가 0이기 때문에 -->
+	</beans:bean>
+	
+	<!-- 프로젝트 최상위 포로젝트 패키지명 com.ghs.ptt -> 최상위는 com(레벨1) -->
+	<!-- <context:component-scan base-package="com" /> -->
+	<!-- contoller 경로 -->
+	<context:component-scan base-package="com.ghs.*" />
+	
+	<!-- been 추가 -->
+	<!-- 파일 업로드, 다운로드 설정 -->
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<beans:property name="defaultEncoding" value="UTF-8"></beans:property>
+		<!-- 한 번에 올릴 수 있는 최대 사이즈(type:long) : 10MB -->
+		<beans:property name="maxUploadSize" value="10000000"></beans:property> 
+		<!-- 해당 경로에 최대로 저장 가능한 파일 사이즈(type:int : 10MB -->
+		<beans:property name="maxInMemorySize" value="10000000"></beans:property> 
+	</beans:bean>
+	<!-- 파일 티렉토리 설정 -->
+	<!-- String uploadPath = new String("업로드 경로") -->
+	<beans:bean id="uploadPath" class="java.lang.String">
+		<!-- 파일 업로드 디렉터리 -->
+		<beans:constructor-arg value="C:/Users/HAN/eclipse-workspace/ptt/src/main/webapp/resources/fileUpload"></beans:constructor-arg>
+	</beans:bean>
+	
+	<!-- <beans:bean id="springSecurityFilterChain" class="org.springframework.web.filter.DelegatingFilterProxy"></beans:bean> -->
+	<!-- 사용자 권한 INTERCEPTOR 경로 설정 -->
+	<!-- 
+	-->
+	<!-- 인터셉터 등록된 순으로 적용 -->
+	
+	<!-- interceptor 설정 -->
+  
+ 	<!-- 디바이스 구별 -->
+ 	<beans:bean class="org.springframework.mobile.device.DeviceResolverHandlerInterceptor" />
+ 	<beans:bean id="loginInterceptor" class="com.ghs.ptt.util.interceptor.LoginInterceptor"/>	<!-- 로그인 후 -->
+	<interceptors>
+		 <interceptor>
+		
+			<!-- 로그인 인증이 필요한 것 -->
+			<mapping path="/**"/>
+			
+			<mapping path="/user/login.do"/>
+			
+			
+			<!-- 로그인 정보 없어도 접근 가능한 url  -->
+			<exclude-mapping path="/"/> 
+			<exclude-mapping path="/user/logOut"/>
+			<exclude-mapping path="/user/login.do"/> 
+			
+			<exclude-mapping path="/server/**"/>
+			<exclude-mapping path="/chat/**"/>	
+			<exclude-mapping path="/topic/**"/>	
+			
+			<exclude-mapping path="/aes/encrypt"/> 
+			<exclude-mapping path="/aes/decrypt/*"/> 
+			<exclude-mapping path="/aes/getAes/*"/> 
+			<exclude-mapping path="/user/getE164"/>
+			<exclude-mapping path="/downloadExel"/> 
+	
+			
+			<!-- 엑셀 다운로드 -->
+			<exclude-mapping path="/user/insertExcel"/>	
+			<!-- <exclude-mapping path="/eqp/downloadExel"/>	
+			<exclude-mapping path="/dpart/downloadExel"/>	 -->
+			
+			<exclude-mapping path="/dashBoardGuest"/> 
+			<exclude-mapping path="/resources/**/"/>			
+			
+			 <beans:ref bean="loginInterceptor"/>  <!-- 사용할 interceptor 설정 -->
+		</interceptor>         
+		
+		
+		<!-- 아래 내용은 로그아웃후 뒤로가기버튼눌렀을때 다시 로그인 되는것을 방지하기 위함. -->
+		<!-- <beans:bean id="webContentInterceptor" class="org.springframework.web.servlet.mvc.WebContentInterceptor">
+			<beans:property name="cacheSeconds" value="0" />
+			<beans:property name="useExpiresHeader" value="true" />	
+			<beans:property name="useCacheControlHeader" value="true" />
+			<beans:property name="useCacheControlNoStore" value="true" />
+			<beans:property name="cacheMappings">
+			아래 경로에만 뒤로가기 제한시킴. 
+			<beans:props>  <beans:prop key="/index/**">86400</beans:prop> </beans:props>
+			</beans:property>
+		</beans:bean>	 -->
+		
+		<!-- 
+		<interceptor>
+			로그인 후 막을 url
+			<mapping path="/"/>
+			<mapping path="/?**"/>
+			
+			로그인 후 막지 않을 url
+			
+			<exclude-mapping path="/server/**"/>
+			<exclude-mapping path="/chat/**"/>	
+			<exclude-mapping path="/topic/**"/>	
+			<exclude-mapping path="/server/**"/>
+			<exclude-mapping path="/equip/**"/>	
+			<exclude-mapping path="/dpart/**"/>	
+			<exclude-mapping path="/user/**"/>	
+			<mapping path="/**"/>
+			<exclude-mapping path="/resources/**/"/>
+			
+			<beans:bean id="loginAfterInterceptor" class="com.ghs.ptt.util.interceptor.LoginAfterInterceptor"/>
+			<beans:ref bean="logoutInterceptor"/> 
+		</interceptor> -->
+		
+		<!-- 아래 경로에만 뒤로가기 제한시킴. -->
+		<!-- <beans:bean id="webContentInterceptor" class="org.springframework.web.servlet.mvc.WebContentInterceptor">
+			<beans:property name="cacheSeconds" value="0" />
+			<beans:property name="useExpiresHeader" value="true" />
+			<beans:property name="useCacheControlHeader" value="true" />
+			<beans:property name="useCacheControlNoStore" value="true" />
+			<beans:property name="cacheMappings">
+				<beans:props>  <beans:prop key="/index/**">86400</beans:prop> </beans:props>
+			</beans:property>
+		</beans:bean> -->
+		
+	</interceptors>
+	
+	
+	 
+
+</beans:beans>

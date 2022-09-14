@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace : 해당 dao 클래스 매퍼 -->
+<!-- <mapper namespace="com.ghs.board.dao.mapper.BoardMapper"> -->
+<mapper namespace="Eqp">
+	<!-- resultType : select문 실행 결과 담은 객체, 패키지 포함 calss or 객체, alias
+		 resultMap : select문 실행 결과 담은 객체를 Map으로 지정, 
+		 parameterType : -->
+		 
+	<!-- 장비 목록 -->
+	<!-- 
+	<select  id="listEqp" resultType="Eqp">parameterType="Page"
+		SELECT 		*
+		FROM 		eqp_info
+		ORDER BY 	equip_num DESC, mdfy_ymdt DESC	
+		LIMIT		#{startRow}, #{endRow}
+	</select>
+	 -->
+	 
+	<!--  장비 수 -->
+	<!-- 
+	<select id="eqpCount" resultType="int">
+		SELECT COUNT(*) FROM eqp_info
+	</select>
+	 -->
+	 
+	<!-- 장비 상세 보기 -->
+	<select id="viewEqp" resultType="Eqp">
+		SELECT * FROM eqp_info WHERE equip_num = #{equip_num}
+	</select>
+	
+	<!-- 엑셀 -->
+	<select  id="downloadExel" resultType="Eqp">
+		SELECT 		*
+		FROM 		eqp_info
+		ORDER BY 	equip_num ASC	
+	</select>
+	
+	
+	<!-- 목록 -->
+	<select  id="listEqp" resultType="Eqp" parameterType="Scri">
+		SELECT *
+		FROM (
+			SELECT  @rownum:=@rownum+1 rnum, A.* 
+  			FROM 	eqp_info A, (SELECT @ROWNUM := 0) R
+			WHERE 	1=1
+			<include refid="searchInclude"></include>
+			ORDER BY 	equip_num DESC, mdfy_ymdt DESC
+		) list
+		limit #{rowStart}, #{rowEnd} 
+	</select>
+	
+	
+	<!-- 사용자 수 조회 -->
+	<select id="listCount" resultType="int" parameterType="Scri">
+		SELECT 	COUNT(equip_num)
+		FROM 	eqp_info
+		WHERE 	1=1
+		<include refid="searchInclude"></include>
+		AND		equip_num > 0
+	</select>
+
+	<!--  검색 -->	
+	<!-- where 절을 include -->
+	<sql id="searchInclude">
+		<if test="searchType != null">
+			<if test="searchType == 'equip_num'.toString() "> AND equip_num LIKE CONCAT('%',#{keyword},'%') </if>
+			<if test="searchType == 'eqp_id'.toString() "> AND eqp_id LIKE CONCAT('%',#{keyword},'%') </if>
+			<if test="searchType == 'eqp_nm'.toString() "> AND eqp_nm LIKE CONCAT('%',#{keyword},'%') </if>
+			<if test="searchType == 'co_num'.toString() "> AND co_num LIKE CONCAT('%',#{keyword},'%') </if>
+		</if>
+		
+		<if test="searchType == null"> AND equip_num > 0
+		</if>
+	</sql>
+	
+	
+</mapper>

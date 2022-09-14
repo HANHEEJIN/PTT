@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace : 해당 dao 클래스 매퍼 -->
+<!-- <mapper namespace="com.ghs.board.dao.mapper.BoardMapper"> -->
+<mapper namespace="Dpart">
+	<!-- resultType : select문 실행 결과 담은 객체, 패키지 포함 calss or 객체, alias
+		 resultMap : select문 실행 결과 담은 객체를 Map으로 지정, 
+		 parameterType : -->
+	
+	<!-- 부서 목록 -->
+
+	<select  id="listDpart" resultType="Dpart"><!-- parameterType="Page" -->
+		SELECT 		co_num, dpart_num, dpart_index, dpart_nm, parent_id 
+		FROM 		dpart_info
+		ORDER BY 	dpart_num ASC	
+	</select>
+
+	 
+	<!--  부서 수 -->
+	<select id="dpartCount" resultType="int">
+		SELECT COUNT(*) FROM dpart_info
+	</select>
+
+	 
+	<!-- 부서 상세 보기 -->
+	<select id="getViewDpart" resultType="Dpart">
+		SELECT * FROM dpart_info WHERE dpart_index = #{dpart_index}
+	</select>
+	
+	<!-- 직책 -->
+	<select id="getPosiList" resultType="Posi">
+		SELECT 		* 
+		FROM 		position_info
+		ORDER BY	pst_num ASC
+	</select>
+	
+	<!-- 부서 상세 보기 -->
+	<select id="getViewCompany" resultType="Company">
+		SELECT * FROM co_num_info WHERE co_index = #{co_index}
+	</select>
+	
+	
+	<select  id="downloadExel" resultType="Dpart">
+		SELECT 		*
+		FROM 		dpart_info
+		ORDER BY 	dpart_num ASC	
+	</select>
+</mapper>

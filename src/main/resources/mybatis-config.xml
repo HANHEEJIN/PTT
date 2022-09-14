@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+<settings>
+    <setting name="cacheEnabled" value="false" />
+    <setting name="jdbcTypeForNull" value="NULL" />
+</settings>
+
+	<typeAliases>
+		<!-- DTO를 별칭으로 줄여서 사용하기 위함 (alias에 원하는 별칭 기입) -->
+		
+		<typeAlias type="com.ghs.ptt.dto.UserDTO" alias="User" />
+		<typeAlias type="com.ghs.ptt.dto.EqpDTO" alias="Eqp" />
+		<typeAlias type="com.ghs.ptt.dto.ChatDTO" alias="Chat" />
+		<typeAlias type="com.ghs.ptt.dto.DpartDTO" alias="Dpart" />
+		<typeAlias type="com.ghs.ptt.dto.SipDTO" alias="Sip" />
+		<typeAlias type="com.ghs.ptt.dto.MqttDTO" alias="Mqtt" />
+		<typeAlias type="com.ghs.ptt.dto.PositionDTO" alias="Posi" />
+		<typeAlias type="com.ghs.ptt.dto.MsgDTO" alias="Msg" />
+		<typeAlias type="com.ghs.ptt.dto.ChatUserDTO" alias="CUser" />
+		<typeAlias type="com.ghs.ptt.dto.TopicDTO" alias="Topic" />
+		<typeAlias type="com.ghs.ptt.dto.PageDTO" alias="Page" />
+		
+		<typeAlias type="com.ghs.ptt.dto.PageMaker" alias="Maker" />
+		<typeAlias type="com.ghs.ptt.dto.Criteria" alias="Cri" />
+		<typeAlias type="com.ghs.ptt.dto.SearchCriteria" alias="Scri" />
+		
+		<!-- ResponseDto-->
+		<!-- <typeAlias type="com.ghs.ptt.responseDto.ResUserDTO" alias="ResUser" /> -->
+		<!-- <typeAlias type="com.ghs.ptt.dto.ChatUserInfoDTO" alias="Info" /> -->
+		
+		<typeAlias type="com.ghs.ptt.responseDto.CompanyDTO" alias="Company" />
+		<typeAlias type="com.ghs.ptt.responseDto.SipResDTO" alias="SipRes" />
+		<typeAlias type="com.ghs.ptt.responseDto.UserResDTO" alias="UserRes" />
+		
+		<typeAlias type="com.ghs.ptt.responseDto.AesResDTO" alias="AesRes" />
+		
+	</typeAliases>
+</configuration>
+
+

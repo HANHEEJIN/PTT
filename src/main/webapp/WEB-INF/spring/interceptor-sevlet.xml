@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    
+	<!-- <beans:bean id="commonInterceptor" class="com.ghs.ptt.util.CommonInterceptor"/>
+	<interceptors>
+		<interceptor>
+			<mapping path="/**"/>	
+			<exclude-mapping path =""></exclude-mapping> 제외할 url 설정
+			<beans:ref bean="commonInterceptor"/> 사용할 interceptor 설정
+		</interceptor>
+	</interceptors>
+        
+	interceptor 설정
+    <interceptors>
+       <interceptor>
+           <mapping path="/**"/>	
+           <exclude-mapping path="/resources/**/"/> CSS, JS, IMAGE등 여러 리소스 패턴에서 제외
+           <beans:ref bean="DeviceResolverHandlerInterceptor"/>
+       </interceptor>
+    </interceptors>
+     
+	
+	
+    <beans:bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+      
+    <beans:bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+      <beans:property name="order" value="0"/> 우선순위
+    </beans:bean>
+     
+     
+     jsonview등록 -> pom.xml의 jackson-mapper-asl, jackson-core-asl
+    <beans:bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView"/>
+ -->       
+</beans:beans>

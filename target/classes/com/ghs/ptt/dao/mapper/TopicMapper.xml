@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace : 해당 dao 클래스 매퍼 -->
+<!-- <mapper namespace="com.ghs.board.dao.mapper.BoardMapper"> -->
+<mapper namespace="Topic">
+	<!-- resultType : select문 실행 결과 담은 객체, 패키지 포함 calss or 객체, alias
+		 resultMap : select문 실행 결과 담은 객체를 Map으로 지정, 
+		 parameterType : -->
+	
+
+	<!-- psrameterType으로 String형태로 데이터 들어감 -> 새ㅔㅑㅊ_ㅜㅡ -->
+	<select id="getTopic" resultType="Topic" parameterType="String">
+		SELECT DISTINCT topic_id
+		FROM topic_info
+		WHERE topic_id like CONCAT('%',#{topic_nm},'%');
+	</select>
+</mapper>

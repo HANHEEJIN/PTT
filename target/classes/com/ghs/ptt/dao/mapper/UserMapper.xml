@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace : 해당 dao 클래스 매퍼 -->
+<!-- <mapper namespace="com.ghs.board.dao.mapper.UserMapper"> -->
+<mapper namespace="User">
+	<!-- resultType : select문 실행 결과 담은 객체, 패키지 포함 calss or 객체, alias
+		 resultMap : select문 실행 결과 담은 객체를 Map으로 지정, 
+		 parameterType : -->
+		 
+	<!-- 아이디 중복 체크 -->
+	<select id="insertIdCheck" parameterType="User" resultType="int">
+		SELECT COUNT(*) FROM user_info WHERE user_id = #{user_id}
+	</select>
+	 
+
+	 
+	<!-- 사용자 상세 보기 -->
+	<select id="getViewUser" resultType="UserRes">
+		SELECT * FROM user_info WHERE user_num = #{user_num}
+	</select>
+	
+	<!-- 로그인 -->
+	<select id="login" resultType="User">
+		<!-- SELECT 	user_id, user_lvl
+		FROM 	user_info
+		WHERE 	user_id=#{user_id} AND user_pwd=#{user_pwd} -->
+		SELECT 	user_id, user_lvl
+		FROM 	user_info
+		WHERE 	user_id=#{user_id}
+	</select>
+	
+	<select  id="downloadExel" resultType="User">
+		SELECT 		*
+		FROM 		user_info
+		ORDER BY 	user_num ASC	
+	</select>
+
+	<!--  E164 -->
+<!-- 	<select id="getE164" parameterType="String"> 
+		SELECT user_num, user_nm, e164_no FROM user_info ORDER BY e164_no DESC LIMIT 1;
+	</select> -->
+	
+	<select id="getE164" resultType="User"> <!-- resultType="" -->
+		SELECT user_num, user_nm, e164_no FROM user_info ORDER BY e164_no DESC LIMIT 1;
+	</select>
+	
+	
+	<!-- 사용자 목록 -->
+	<!-- <select  id="listUser1" resultType="User" parameterType="Scri">
+		SELECT 		*
+		FROM 		user_info
+		WHERE		<include refid="searchInclude1"></include> 검색조건
+		LIMIT		#{rowStart}, #{rowEnd} 
+		ORDER BY 	user_num DESC, mdfy_ymdt DESC	
+		
+	</select> -->
+
+	<!-- 사용자 목록 -->
+	<select  id="listUser" resultType="User" parameterType="Scri">
+		SELECT *
+		FROM (
+			SELECT  @rownum:=@rownum+1 rnum, A.* 
+  			FROM 	user_info A, (SELECT @ROWNUM := 0) R
+			WHERE 	1=1
+			<include refid="searchInclude"></include>
+			ORDER BY 	user_num DESC, mdfy_ymdt DESC
+		) list
+		limit #{rowStart}, #{rowEnd} 
+	</select>
+	
+	
+	<!-- 사용자 수 조회 -->
+	<select id="listCount" resultType="int" parameterType="Scri">
+		SELECT 	COUNT(user_num)
+		FROM 	user_info
+		WHERE 	1=1
+		<include refid="searchInclude"></include>
+		AND		user_num > 0
+	</select>
+
+	<!--  검색 -->	
+	<!-- where 절을 include -->
+	<sql id="searchInclude">
+		<if test="searchType != null">
+			<if test="searchType == 'user_num'.toString() "> AND user_num LIKE CONCAT('%',#{keyword},'%') </if>
+			<if test="searchType == 'user_nm'.toString() "> AND user_nm LIKE CONCAT('%',#{keyword},'%') </if>
+			<if test="searchType == 'user_id'.toString() "> AND user_id LIKE CONCAT('%',#{keyword},'%') </if>
+			<if test="searchType == 'co_num'.toString() "> AND co_num LIKE CONCAT('%',#{keyword},'%') </if>
+		</if>
+		
+		<if test="searchType == null"> AND user_num > 0
+		</if>
+	</sql>
+	
+	
+	 
+	
+	
+</mapper>

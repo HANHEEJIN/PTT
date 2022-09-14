@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace : 해당 dao 클래스 매퍼 -->
+<!-- <mapper namespace="com.ghs.board.dao.mapper.BoardMapper"> -->
+<mapper namespace="Svr">
+	<!-- resultType : select문 실행 결과 담은 객체, 패키지 포함 calss or 객체, alias
+		 resultMap : select문 실행 결과 담은 객체를 Map으로 지정, 
+		 parameterType : -->
+		 
+	 <!-- sip 목록 -->
+	
+	<select  id="getSipList" resultType="SipRes">
+		SELECT 		*
+		FROM 		sip_svr_info
+		ORDER BY 	svr_id ASC	
+	</select>
+	
+	
+	<!--  sip 수 -->
+	<select id="sipCount" resultType="int">
+		SELECT COUNT(*) FROM sip_svr_info
+	</select>
+	
+	 
+	<!-- sip 상세 보기 -->
+	<select id="viewSip" resultType="SipRes">
+		SELECT * FROM sip_svr_info WHERE svr_num = #{svr_num}
+	</select>
+	
+	<!-- sip 추가 -->
+	<insert id="sipInsert" parameterType="SipRes">
+		INSERT INTO lte_ptt.sip_svr_info VALUES (#{svr_id}, #{svr_ip}, #{svr_port}, #{svr_type}, #{svr_num},  #{svr_rpt_start_port}, #{svr_rpt_count_port})
+	</insert>
+	
+	<!-- sip 수정 -->
+	<update id="sipUpdate" parameterType="SipRes">
+		<!-- UPDATE	lte_ptt.sip_svr_info 
+		SET 	svr_id = SIP06,
+				svr_ip = 211.119.132.243,
+				svr_port = 5060,
+				svr_type = sip,
+				svr_rpt_start_port = 20004,
+				svr_rpt_count_port = 1
+		WHER	svr_num = 20; -->
+	
+		UPDATE 	lte_ptt.sip_svr_info 
+		SET 	svr_id = #{svr_id},
+				svr_ip = #{svr_ip},
+				svr_port = #{svr_port},
+				svr_type = #{svr_type},
+				svr_num = #{svr_num},
+				svr_rpt_start_port = #{svr_rpt_start_port},
+				svr_rpt_count_port = #{svr_rpt_count_port}
+		WHERE svr_num = #{svr_num}
+	</update>
+	<!-- sip 삭제 -->
+	<delete id="sipDelete">
+		DELETE FROM lte_ptt.sip_svr_info WHERE svr_num = #{svr_num}
+	</delete>
+	
+	<select  id="sipExel" resultType="Sip">
+		SELECT 		*
+		FROM 		sip_svr_info
+		ORDER BY 	svr_num ASC	
+	</select>
+
+	<select  id="mqttExel" resultType="Mqtt">
+		SELECT 		*
+		FROM 		mqtt_svr_info
+		ORDER BY 	mqtt_svr_num ASC	
+	</select>
+	
+	
+	<!-- ***** ***** ***** ***** ***** ***** ***** ***** -->
+	<!-- SIP 페이징 목록 -->
+	<select  id="listSip" resultType="Sip" parameterType="Scri">
+		SELECT *
+		FROM (
+			SELECT  @rownum:=@rownum+1 rnum, A.* 
+  			FROM 	sip_svr_info A, (SELECT @ROWNUM := 0) R
+			WHERE 	1=1
+			<include refid="searchInclude"></include>
+			ORDER BY 	svr_num DESC
+		) list
+		limit #{rowStart}, #{rowEnd} 
+	</select>
+	
+	<!-- 사용자 수 조회 -->
+	<select id="listCountSip" resultType="int" parameterType="Scri">
+		SELECT 	COUNT(svr_num)
+		FROM 	sip_svr_info
+		WHERE 	1=1
+		<include refid="searchIncludeSip"></include>
+		AND		svr_num > 0
+	</select>
+
+	<!--  검색 -->	
+	<!-- where 절을 include -->
+	<sql id="searchIncludeSip">
+		<if test="searchType != null">
+			<if test="searchType == 'svr_id'.toString() "> AND svr_id LIKE CONCAT('%',#{keyword},'%') </if>
+			<if test="searchType == 'svr_ip'.toString() "> AND svr_ip LIKE CONCAT('%',#{keyword},'%') </if>
+			<if test="searchType == 'svr_type'.toString() "> AND svr_type LIKE CONCAT('%',#{keyword},'%') </if>
+		</if>
+		
+		<if test="searchType == null"> AND svr_num > 0
+		</if>
+	</sql>
+	
+	
+	<!-- ************************************************************************** -->
+	<!-- MQTT 페이징  목록 -->
+	<select  id="listMqtt" resultType="Mqtt" parameterType="Scri">
+		SELECT *
+		FROM (
+			SELECT  @rownum:=@rownum+1 rnum, A.* 
+  			FROM 	mqtt_svr_info A, (SELECT @ROWNUM := 0) R
+			WHERE 	1=1
+			<include refid="searchInclude"></include>
+			ORDER BY 	mqtt_svr_num DESC
+		) list
+		limit #{rowStart}, #{rowEnd} 
+	</select>
+	
+	
+	<!-- 사용자 수 조회 -->
+	<select id="listCountMqtt" resultType="int" parameterType="Scri">
+		SELECT 	COUNT(mqtt_svr_num)
+		FROM 	mqtt_svr_info
+		WHERE 	1=1
+		<include refid="searchInclude"></include>
+		AND		mqtt_svr_num > 0
+	</select>
+
+	<!--  검색 -->	
+	<!-- where 절을 include -->
+	<sql id="searchInclude">
+		<if test="searchType != null">
+			<if test="searchType == 'mqtt_svr_id'.toString() "> AND mqtt_svr_id LIKE CONCAT('%',#{keyword},'%') </if>
+			<if test="searchType == 'mqtt_svr_ip'.toString() "> AND mqtt_svr_ip LIKE CONCAT('%',#{keyword},'%') </if>
+			<if test="searchType == 'mqtt_svr_port'.toString() "> AND mqtt_svr_port LIKE CONCAT('%',#{keyword},'%') </if>
+		</if>
+		
+		<if test="searchType == null"> AND mqtt_svr_num > 0
+		</if>
+	</sql>
+	
+	<!-- mqtt 목록 -->
+<!-- 	<select  id="listMqtt" resultType="Mqtt">
+		SELECT 		*
+		FROM 		mqtt_svr_info
+		ORDER BY 	mqtt_svr_id ASC	
+		LIMIT		#{startRow}, #{endRow}
+	</select>
+	  -->
+	 
+	<!--  장비 수 -->
+	 
+	<select id="mqttCount" resultType="int">
+		SELECT COUNT(*) FROM mqtt_svr_info
+	</select>
+	 
+	<!-- 장비 상세 보기 -->
+	<select id="viewMqtt" resultType="Mqtt">
+		SELECT * FROM mqtt_svr_info WHERE mqtt_svr_num = #{mqtt_svr_num}
+	</select>
+	
+</mapper>
